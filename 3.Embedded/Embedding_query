@@ -1,0 +1,55 @@
+"""
+This script demonstrates text embedding and semantic similarity using Google Gemini.
+It converts a query and multiple documents into mathematical vectors (embeddings) and 
+calculates cosine similarity using NumPy to find the most relevant matches.
+This is a fundamental building block for semantic search and RAG systems.
+"""
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from dotenv import load_dotenv
+import numpy as np
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Initialize Google Generative AI Embeddings
+# Using 'models/embedding-001' which is standard for Gemini
+embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+
+print("--- Query Embedding Example ---")
+# Define a query string
+query = "What is the capital of France?"
+
+# Embed the single query
+# .embed_query() returns a list of floats
+query_embedding = embeddings.embed_query(query)
+
+print(f"Query: '{query}'")
+print(f"Embedding Dimensions: {len(query_embedding)}")
+print(f"First 5 values: {query_embedding[:5]}")
+
+print("\n--- Document Embedding Example ---")
+# Define multiple documents
+documents = [
+    "Paris is the capital of France.",
+    "London is the capital of the United Kingdom.",
+    "The weather in Paris is beautiful today."
+]
+
+# Embed multiple documents at once
+# .embed_documents() returns a list of lists of floats
+doc_embeddings = embeddings.embed_documents(documents)
+
+print(f"Embedded {len(doc_embeddings)} documents.")
+
+print("\n--- Similarity Calculation Example ---")
+# Function to calculate cosine similarity using numpy
+def cosine_similarity(vec1, vec2):
+    v1 = np.array(vec1)
+    v2 = np.array(vec2)
+    return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+
+# Compare the query with each document
+for i, doc in enumerate(documents):
+    similarity = cosine_similarity(query_embedding, doc_embeddings[i])
+    print(f"Similarity with Doc {i+1}: {similarity:.4f} -> '{doc}'")
