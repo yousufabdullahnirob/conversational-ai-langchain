@@ -1,0 +1,9 @@
+{
+    "_type": "prompt",
+    "input_variables": [
+        "paper_input",
+        "style_input",
+        "length_input"
+    ],
+    "template": "Explain the research paper titled '{paper_input}' in a {style_input} style. The explanation should be {length_input}."
+}
