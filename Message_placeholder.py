@@ -8,14 +8,14 @@ load_dotenv()
 
 model = ChatGoogleGenerativeAI(model="gemini-3-flash-preview")
 
-# ১. টেমপ্লেট তৈরি
+
 chat_template = ChatPromptTemplate.from_messages([
     ("system", "You are a helpful expert. Provide responses in plain text only. Do not use Markdown or bold text (**)."),
     MessagesPlaceholder(variable_name="chat_history"),
     ("human", "{user_input}")
 ])
 
-# ২. চ্যাট হিস্ট্রি ফাইল থেকে লোড করার ফাংশন
+
 def load_chat_history(file_path):
     history = []
     try:
@@ -31,7 +31,7 @@ def load_chat_history(file_path):
         pass
     return history
 
-# ফাইল থেকে আগের হিস্ট্রি লোড করা
+
 chat_history = load_chat_history("chathistorytwxt.txt")
 
 print("Chatbot is ready! (Type 'exit' to stop)")
@@ -41,7 +41,7 @@ while True:
     if user_query.lower() == "exit":
         break
 
-    # প্রম্পট তৈরি এবং কল করা
+   
     prompt = chat_template.invoke(
         {
             "chat_history": chat_history,
@@ -51,7 +51,7 @@ while True:
 
     response = model.invoke(prompt)
 
-    # রেসপন্স থেকে টেক্সট বের করা
+
     if isinstance(response.content, list):
         content = "".join([block.get("text", "") if isinstance(block, dict) else str(block) for block in response.content])
     else:
@@ -59,6 +59,6 @@ while True:
 
     print(f"AI: {content}")
 
-    # নতুন কথাগুলো হিস্ট্রিতে যোগ করা যাতে AI পরে মনে রাখতে পারে
+  
     chat_history.append(HumanMessage(content=user_query))
     chat_history.append(AIMessage(content=content))
